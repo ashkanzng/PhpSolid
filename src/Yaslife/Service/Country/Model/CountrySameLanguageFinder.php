@@ -46,8 +46,6 @@ class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
         $this->processData($data,$result);
 
         return $result;
-        //echo "Send Request with guzzle: Same language\n";
-        //return new CountryQueryResponseDto();
     }
 
     public function processData(array $data, CountryQueryResponseDto $result)
@@ -62,6 +60,6 @@ class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
             $result->setResponse($countryLanguageCode);
             return;
         }
-        $result->setResponse('sdssfsf');
+        $result->setResponse('Country Not Found');
     }
 }
