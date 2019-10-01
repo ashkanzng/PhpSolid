@@ -41,64 +41,17 @@ class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
         $this->inputStringLengthValidator->validate($country, 3);
         $responseData = new CountryQueryResponseDto();
 
-        if ( $this->getCountryLanguages($country, $responseData) === true )
+        if ( $this->countryRest->getCountryLanguages($country, $responseData) === true )
         {
-            $this->getAllCountryWithSameLanguage($responseData);
+            if (!empty( $listOfCountries = $this->countryRest->getAllCountryWithSameLanguage($responseData))){
+                $output = 'Country language code: '. $responseData->getResponse() . PHP_EOL;
+                $listOfCountries = array_map('current', $listOfCountries);
+                $output .= $country . ' speaks same language with these countries: ' . implode(',' ,  $listOfCountries) . PHP_EOL;
+                $responseData->setResponse($output);
+            }
         };
+
         return $responseData;
-    }
-
-    /**
-     * @param array $data
-     * @return bool
-     */
-    protected function checkResult(array $data )
-    {
-        if (isset($data['Code'])){
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param string $country
-     * @param CountryQueryResponseDto $responseData
-     * @return bool
-     */
-    protected function getCountryLanguages(string $country, CountryQueryResponseDto $responseData): bool
-    {
-        $url = 'name/'.$country.'?fullText=true&fields=name;languages';
-        $restResult = $this->countryRest->sendRequest($url);
-
-        if ($this->checkResult( reset($restResult) ) === false){
-            $responseData->setResponse( 'Country ' .reset($restResult)['Message']);
-            return false;
-        }
-        $responseData->setResponse( current(reset($restResult)['languages'])['iso639_1'] );
-        return true;
-    }
-
-    /**
-     * @param CountryQueryResponseDto $responseData
-     */
-    protected function getAllCountryWithSameLanguage( CountryQueryResponseDto $responseData): void
-    {
-        $language = $responseData->getResponse();
-        $url = 'lang/'.$language.'?fields=name';
-        $restResult = $this->countryRest->sendRequest($url);
-
-        if ($this->checkResult( reset($restResult) ) === false){
-            $responseData->setResponse('Language ' .reset($restResult)['Message']);
-            return;
-        }
-        $output = '';
-        foreach ($restResult as $value){
-            $output .= $value['name'] . ', ';
-        }
-        $responseData->setResponse(
-            $output . PHP_EOL
-        );
-        return;
     }
 
 }

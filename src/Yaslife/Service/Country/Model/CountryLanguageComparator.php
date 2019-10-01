@@ -39,12 +39,14 @@ class CountryLanguageComparator implements CountryLanguageComparatorInterface
         foreach ($countryQueryRequestDto->getCountries() as $country) {
             $this->inputStringLengthValidator->validate($country, 3);
         }
-        print_r($countryQueryRequestDto->getCountries());
-        // logic done!
+        $responseData = new CountryQueryResponseDto();
+        $firstCountry = current($countryQueryRequestDto->getCountries());
+        if ( $this->countryRest->getCountryLanguages($firstCountry, $responseData) === true ){
+            print_r($responseData);
+        }
 
-        $response = new CountryQueryResponseDto();
-        $response->setResponse("Spain and Usa has same language\n");
-
-        return $response;
+        return $responseData;
     }
+
+
 }
