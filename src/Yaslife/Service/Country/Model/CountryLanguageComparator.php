@@ -39,10 +39,7 @@ class CountryLanguageComparator implements CountryLanguageComparatorInterface
         foreach ($countryQueryRequestDto->getCountries() as $country) {
             $this->inputStringLengthValidator->validate($country, 3);
         }
-
-        $array = $this->countryRest->sendRequest('http:');
-        $array = $this->countryRest->sendRequest('http:');
-
+        print_r($countryQueryRequestDto->getCountries());
         // logic done!
 
         $response = new CountryQueryResponseDto();

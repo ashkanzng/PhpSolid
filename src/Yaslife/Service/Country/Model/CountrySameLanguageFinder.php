@@ -39,27 +39,66 @@ class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
     {
         $country = current($countryQueryRequestDto->getCountries());
         $this->inputStringLengthValidator->validate($country, 3);
+        $responseData = new CountryQueryResponseDto();
 
-        $result = new CountryQueryResponseDto();
-        $url = 'name/'.$country.'?fullText=true&fields=name;languages';
-        $data = $this->countryRest->sendRequest($url);
-        $this->processData($data,$result);
-
-        return $result;
+        if ( $this->getCountryLanguages($country, $responseData) === true )
+        {
+            $this->getAllCountryWithSameLanguage($responseData);
+        };
+        return $responseData;
     }
 
-    public function processData(array $data, CountryQueryResponseDto $result)
+    /**
+     * @param array $data
+     * @return bool
+     */
+    protected function checkResult(array $data )
     {
-        $data = reset($data);
         if (isset($data['Code'])){
-            $result->setResponse($data['Message']);
-            return;
+            return false;
         }
-        if (isset($data['languages'])){
-            $countryLanguageCode = current($data['languages'])['iso639_1'];
-            $result->setResponse($countryLanguageCode);
-            return;
-        }
-        $result->setResponse('Country Not Found');
+        return true;
     }
+
+    /**
+     * @param string $country
+     * @param CountryQueryResponseDto $responseData
+     * @return bool
+     */
+    protected function getCountryLanguages(string $country, CountryQueryResponseDto $responseData): bool
+    {
+        $url = 'name/'.$country.'?fullText=true&fields=name;languages';
+        $restResult = $this->countryRest->sendRequest($url);
+
+        if ($this->checkResult( reset($restResult) ) === false){
+            $responseData->setResponse( 'Country ' .reset($restResult)['Message']);
+            return false;
+        }
+        $responseData->setResponse( current(reset($restResult)['languages'])['iso639_1'] );
+        return true;
+    }
+
+    /**
+     * @param CountryQueryResponseDto $responseData
+     */
+    protected function getAllCountryWithSameLanguage( CountryQueryResponseDto $responseData): void
+    {
+        $language = $responseData->getResponse();
+        $url = 'lang/'.$language.'?fields=name';
+        $restResult = $this->countryRest->sendRequest($url);
+
+        if ($this->checkResult( reset($restResult) ) === false){
+            $responseData->setResponse('Language ' .reset($restResult)['Message']);
+            return;
+        }
+        $output = '';
+        foreach ($restResult as $value){
+            $output .= $value['name'] . ', ';
+        }
+        $responseData->setResponse(
+            $output . PHP_EOL
+        );
+        return;
+    }
+
 }

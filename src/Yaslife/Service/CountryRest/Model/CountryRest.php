@@ -20,10 +20,11 @@ class CountryRest implements CountryRestInterface
             'timeout'  => 2.0,
         ]);
     }
+
     /**
      * @param string $url
-     *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function sendRequest(string $url): array
     {
@@ -34,7 +35,7 @@ class CountryRest implements CountryRestInterface
             return [
                 [
                     'Code'=>$e->getCode(),
-                    'Message'=>'Country Not Found'
+                    'Message'=>'Not Found'
                 ]
             ];
         }
