@@ -3,28 +3,27 @@
 namespace Yaslife\Service\Country;
 
 use Yaslife\Core\Kernel\AbstractService;
-use Yaslife\Dto\CountryQueryRequestDto;
-use Yaslife\Dto\CountryQueryResponseDto;
+use Yaslife\Dto\CountryLanguageDto;
 
 class CountryService extends AbstractService implements CountryServiceInterface
 {
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string $country
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountrySameLanguageRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto
+    public function findAllCountriesWithSameLanguagesByCountry(string $country): CountryLanguageDto
     {
-        return $this->getFactory()->createCountrySameLanguageFinder()->sendCountrySameLanguageRequest($countryQueryRequestDto);
+        return $this->getFactory()->createCountrySameLanguageFinder()->findAllCountriesWithSameLanguages($country);
     }
 
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string[] $countries
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountryLanguageComparatorRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto
+    public function findAllCountriesIntersectionWithSameLanguages(array $countries): CountryLanguageDto
     {
-        return $this->getFactory()->createCountryLanguageComparator()->sendCountryLanguageComparatorRequest($countryQueryRequestDto);
+        return $this->getFactory()->createCountryLanguageComparator()->findAllCountriesIntersectionWithSameLanguages($countries);
     }
 }

@@ -11,5 +11,5 @@ interface CommandRegistryInterface
      *
      * @return void
      */
-    public function register(ArrayObject $commands);
+    public function register(ArrayObject $commands): void ;
 }

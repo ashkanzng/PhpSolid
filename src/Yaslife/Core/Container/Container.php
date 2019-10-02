@@ -7,12 +7,12 @@ use Yaslife\Core\Exception\ServiceNotFoundException;
 class Container implements ContainerInterface
 {
     /**
-     * @var Object[]
+     * @var string[]
      */
     protected $services = [];
 
     /**
-     * @var array
+     * @var object[]
      */
     protected $instances = [];
 
@@ -22,7 +22,7 @@ class Container implements ContainerInterface
      *
      * @return ContainerInterface
      */
-    public function register(string $interface, string $class)
+    public function register(string $interface, string $class): ContainerInterface
     {
         $this->services[$interface] = $class;
 
@@ -34,7 +34,7 @@ class Container implements ContainerInterface
      *
      * @return bool
      */
-    public function has(string $interface)
+    public function has(string $interface): bool
     {
         if (isset($this->services[$interface]) && $this->services[$interface] !== null) {
             return true;
@@ -46,7 +46,7 @@ class Container implements ContainerInterface
     /**
      * @param string $interface
      *
-     * @return Object
+     * @return object
      */
     public function get(string $interface)
     {

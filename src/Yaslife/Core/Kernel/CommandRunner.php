@@ -20,7 +20,7 @@ class CommandRunner
      *
      * @return void
      */
-    public function run(array $argv)
+    public function run(array $argv): void
     {
         $this->registerCommands();
 
@@ -32,7 +32,7 @@ class CommandRunner
     /**
      * @return void
      */
-    protected function registerCommands()
+    protected function registerCommands(): void
     {
         $commandRegistryClassName = $this->getApplicationConfig()->getProjectcommandRegistry();
         /** @var CommandRegistryInterface $commandRegistry */

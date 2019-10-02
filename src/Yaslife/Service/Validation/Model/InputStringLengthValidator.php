@@ -12,7 +12,7 @@ class InputStringLengthValidator implements InputStringLengthValidatorInterface
      *
      * @return void
      */
-    public function validate(string $input, int $length)
+    public function validate(string $input, int $length): void
     {
         if (strlen($input) < $length) {
             throw new InvalidStringLengthException(

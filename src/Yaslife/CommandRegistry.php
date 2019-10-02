@@ -3,8 +3,8 @@
 namespace Yaslife;
 
 use ArrayObject;
-use Yaslife\Command\CountryLanguageComparatorCommandRunner;
-use Yaslife\Command\CountrySameLanguageListCommandRunner;
+use Yaslife\Command\CountryLanguageIntersectionCommandRunner;
+use Yaslife\Command\CountryLanguageCommandRunner;
 use Yaslife\Core\Registry\CommandRegistryInterface;
 
 class CommandRegistry implements CommandRegistryInterface
@@ -14,9 +14,9 @@ class CommandRegistry implements CommandRegistryInterface
      *
      * @return void
      */
-    public function register(ArrayObject $commands)
+    public function register(ArrayObject $commands):void
     {
-        $commands->append(new CountrySameLanguageListCommandRunner());
-        $commands->append(new CountryLanguageComparatorCommandRunner());
+        $commands->append(new CountryLanguageCommandRunner());
+        $commands->append(new CountryLanguageIntersectionCommandRunner());
     }
 }

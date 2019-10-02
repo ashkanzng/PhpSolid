@@ -2,9 +2,7 @@
 
 namespace Yaslife\Service\Country\Model;
 
-use Yaslife\Dto\CountryQueryRequestDto;
-use Yaslife\Dto\CountryQueryResponseDto;
-use Yaslife\Service\CountryRest\Model\CountryRestInterface;
+use Yaslife\Dto\CountryLanguageDto;
 use Yaslife\Service\Validation\Model\InputStringLengthValidatorInterface;
 
 class CountryLanguageComparator implements CountryLanguageComparatorInterface
@@ -15,38 +13,54 @@ class CountryLanguageComparator implements CountryLanguageComparatorInterface
     protected $inputStringLengthValidator;
 
     /**
-     * @var CountryRestInterface
+     * @var CountrySameLanguageFinderInterface
      */
-    protected $countryRest;
+    protected $countrySameLanguageFinder;
 
     /**
      * @param InputStringLengthValidatorInterface $inputStringLengthValidator
-     * @param CountryRestInterface $countryRest
+     * @param CountrySameLanguageFinderInterface $countrySameLanguageFinder
      */
-    public function __construct(InputStringLengthValidatorInterface $inputStringLengthValidator, CountryRestInterface $countryRest)
+    public function __construct(InputStringLengthValidatorInterface $inputStringLengthValidator, CountrySameLanguageFinderInterface $countrySameLanguageFinder)
     {
         $this->inputStringLengthValidator = $inputStringLengthValidator;
-        $this->countryRest = $countryRest;
+        $this->countrySameLanguageFinder = $countrySameLanguageFinder;
     }
 
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string[] $countries
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountryLanguageComparatorRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto
+    public function findAllCountriesIntersectionWithSameLanguages(array $countries): CountryLanguageDto
     {
-        foreach ($countryQueryRequestDto->getCountries() as $country) {
-            $this->inputStringLengthValidator->validate($country, 3);
-        }
-        $responseData = new CountryQueryResponseDto();
-        $firstCountry = current($countryQueryRequestDto->getCountries());
-        if ( $this->countryRest->getCountryLanguages($firstCountry, $responseData) === true ){
-            print_r($responseData);
+        $intersection = [];
+        $countryLanguageDtos = $this->findLanguagesByCountries($countries);
+
+        foreach ($countryLanguageDtos as $countryLanguageDto) {
+            $intersection[] = array_intersect($countries, $countryLanguageDto->getCountries());
         }
 
-        return $responseData;
+        $countryLanguageDto = new CountryLanguageDto();
+        $countryLanguageDto->setCountries($countries);
+        $countryLanguageDto->setIntersection($intersection);
+
+        return $countryLanguageDto;
     }
 
+    /**
+     * @param string[] $countries
+     *
+     * @return CountryLanguageDto[]
+     */
+    protected function findLanguagesByCountries(array $countries): array
+    {
+        $countryLanguageDtos = [];
+        foreach ($countries as $country) {
+            $this->inputStringLengthValidator->validate($country, 3);
+            $countryLanguageDtos[] = $this->countrySameLanguageFinder->findAllCountriesWithSameLanguages($country);
+        }
 
+        return $countryLanguageDtos;
+    }
 }

@@ -2,15 +2,14 @@
 
 namespace Yaslife\Service\Country\Model;
 
-use Yaslife\Dto\CountryQueryRequestDto;
-use Yaslife\Dto\CountryQueryResponseDto;
+use Yaslife\Dto\CountryLanguageDto;
 
 interface CountrySameLanguageFinderInterface
 {
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string $country
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountrySameLanguageRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto;
+    public function findAllCountriesWithSameLanguages(string $country): CountryLanguageDto;
 }

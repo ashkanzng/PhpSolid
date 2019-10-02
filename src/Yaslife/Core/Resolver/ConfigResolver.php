@@ -9,7 +9,7 @@ trait ConfigResolver
     /**
      * @return ApplicationConfig
      */
-    protected function getApplicationConfig()
+    protected function getApplicationConfig(): ApplicationConfig
     {
         return new ApplicationConfig();
     }

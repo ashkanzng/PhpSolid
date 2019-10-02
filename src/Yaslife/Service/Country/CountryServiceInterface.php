@@ -2,22 +2,21 @@
 
 namespace Yaslife\Service\Country;
 
-use Yaslife\Dto\CountryQueryRequestDto;
-use Yaslife\Dto\CountryQueryResponseDto;
+use Yaslife\Dto\CountryLanguageDto;
 
 interface CountryServiceInterface
 {
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string $country
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountrySameLanguageRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto;
+    public function findAllCountriesWithSameLanguagesByCountry(string $country): CountryLanguageDto;
 
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string[] $countries
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountryLanguageComparatorRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto;
+    public function findAllCountriesIntersectionWithSameLanguages(array $countries): CountryLanguageDto;
 }

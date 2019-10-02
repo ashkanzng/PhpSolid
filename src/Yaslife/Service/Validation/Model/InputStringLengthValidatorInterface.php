@@ -10,5 +10,5 @@ interface InputStringLengthValidatorInterface
      *
      * @return void
      */
-    public function validate(string $input, int $length);
+    public function validate(string $input, int $length): void;
 }

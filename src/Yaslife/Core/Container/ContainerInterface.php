@@ -10,19 +10,19 @@ interface ContainerInterface
      *
      * @return ContainerInterface
      */
-    public function register(string $interface, string $class);
+    public function register(string $interface, string $class): ContainerInterface;
 
     /**
      * @param string $interface
      *
      * @return bool
      */
-    public function has(string $interface);
+    public function has(string $interface): bool;
 
     /**
      * @param string $interface
      *
-     * @return Object
+     * @return object
      */
     public function get(string $interface);
 }

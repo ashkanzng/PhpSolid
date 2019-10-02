@@ -2,9 +2,7 @@
 
 namespace Yaslife\Service\Country\Model;
 
-use Yaslife\Dto\CountryQueryRequestDto;
-use Yaslife\Dto\CountryQueryResponseDto;
-use Yaslife\Service\CountryRest\Model\CountryRestInterface;
+use Yaslife\Dto\CountryLanguageDto;
 use Yaslife\Service\Validation\Model\InputStringLengthValidatorInterface;
 
 class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
@@ -21,6 +19,7 @@ class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
 
     /**
      * CountrySameLanguageFinder constructor.
+     *
      * @param InputStringLengthValidatorInterface $inputStringLengthValidator
      * @param CountryRestInterface $countryRest
      */
@@ -31,27 +30,31 @@ class CountrySameLanguageFinder implements CountrySameLanguageFinderInterface
     }
 
     /**
-     * @param CountryQueryRequestDto $countryQueryRequestDto
+     * @param string $country
      *
-     * @return CountryQueryResponseDto
+     * @return CountryLanguageDto
      */
-    public function sendCountrySameLanguageRequest(CountryQueryRequestDto $countryQueryRequestDto): CountryQueryResponseDto
+    public function findAllCountriesWithSameLanguages(string $country): CountryLanguageDto
     {
-        $country = current($countryQueryRequestDto->getCountries());
+        $countryLanguageDto =  new CountryLanguageDto();
         $this->inputStringLengthValidator->validate($country, 3);
-        $responseData = new CountryQueryResponseDto();
 
-        if ( $this->countryRest->getCountryLanguages($country, $responseData) === true )
-        {
-            if (!empty( $listOfCountries = $this->countryRest->getAllCountryWithSameLanguage($responseData))){
-                $output = 'Country language code: '. $responseData->getResponse() . PHP_EOL;
-                $listOfCountries = array_map('current', $listOfCountries);
-                $output .= $country . ' speaks same language with these countries: ' . implode(',' ,  $listOfCountries) . PHP_EOL;
-                $responseData->setResponse($output);
-            }
-        };
+        $languages = $this->countryRest->findAllLanguagesByCountry($country);
 
-        return $responseData;
+        if (!$languages) {
+            return $countryLanguageDto;
+        }
+
+        $countries = [];
+        foreach ($languages as $language) {
+            $countries = array_merge($countries, $this->countryRest->findAllCountriesWithSameLanguage($language));
+        }
+
+        $countries = array_column($countries, 'name');
+
+        $countryLanguageDto->setLanguages($languages);
+        $countryLanguageDto->setCountries($countries);
+
+        return $countryLanguageDto;
     }
-
 }
