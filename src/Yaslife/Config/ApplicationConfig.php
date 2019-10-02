@@ -10,7 +10,7 @@ class ApplicationConfig
     /**
      * @return string
      */
-    public function getProjectServiceRegistry()
+    public function getProjectServiceRegistry(): string
     {
         return ServiceRegistry::class;
     }
@@ -18,7 +18,7 @@ class ApplicationConfig
     /**
      * @return string
      */
-    public function getProjectCommandRegistry()
+    public function getProjectCommandRegistry(): string
     {
         return CommandRegistry::class;
     }

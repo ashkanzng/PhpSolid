@@ -12,7 +12,7 @@ abstract class AbstractService
     /**
      * @return ServiceFactory
      */
-    public function getFactory()
+    public function getFactory(): ServiceFactory
     {
         return new ServiceFactory();
     }

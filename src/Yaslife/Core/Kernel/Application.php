@@ -19,7 +19,7 @@ class Application
     /**
      * @return ContainerInterface
      */
-    public static function getContainer()
+    public static function getContainer(): ContainerInterface
     {
         return static::$container;
     }
@@ -27,7 +27,7 @@ class Application
     /**
      * @return $this
      */
-    public function boot()
+    public function boot(): Application
     {
         if (static::$container === null) {
             $container = new Container();
@@ -44,7 +44,7 @@ class Application
      *
      * @return void
      */
-    public function run(array $argv)
+    public function run(array $argv): void
     {
         $commandRunner = new CommandRunner();
         $commandRunner->run($argv);

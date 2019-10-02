@@ -13,5 +13,5 @@ abstract class AbstractCommand
      *
      * @return void
      */
-    abstract public function run(array $argv);
+    abstract public function run(array $argv): void;
 }
