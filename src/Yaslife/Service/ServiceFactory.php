@@ -5,9 +5,12 @@ namespace Yaslife\Service;
 use Yaslife\Core\Resolver\ConfigResolver;
 use Yaslife\Service\Country\Model\CountryLanguageComparator;
 use Yaslife\Service\Country\Model\CountryLanguageComparatorInterface;
+use Yaslife\Service\Country\Model\CountryRest;
+use Yaslife\Service\Country\Model\CountryRestInterface;
 use Yaslife\Service\Country\Model\CountrySameLanguageFinder;
 use Yaslife\Service\Country\Model\CountrySameLanguageFinderInterface;
-use Yaslife\Service\CountryRest\Model\CountryRest;
+use Yaslife\Service\Http\Model\Http;
+use Yaslife\Service\Http\Model\HttpInterface;
 use Yaslife\Service\Validation\Model\InputStringLengthValidator;
 use Yaslife\Service\Validation\Model\InputStringLengthValidatorInterface;
 
@@ -18,38 +21,46 @@ class ServiceFactory
     /**
      * @return CountrySameLanguageFinderInterface
      */
-    public function createCountrySameLanguageFinder()
+    public function createCountrySameLanguageFinder(): CountrySameLanguageFinderInterface
     {
         return new CountrySameLanguageFinder(
             $this->createInputStringLengthValidator(),
-            $this->createHttpRequest()
+            $this->createCountryRest()
         );
     }
 
     /**
      * @return CountryLanguageComparatorInterface
      */
-    public function createCountryLanguageComparator()
+    public function createCountryLanguageComparator(): CountryLanguageComparatorInterface
     {
         return new CountryLanguageComparator(
             $this->createInputStringLengthValidator(),
-            $this->createHttpRequest()
+            $this->createCountrySameLanguageFinder()
         );
+    }
+
+    /**
+     * @return CountryRestInterface
+     */
+    public function createCountryRest(): CountryRestInterface
+    {
+        return new CountryRest($this->createHttp());
     }
 
     /**
      * @return InputStringLengthValidatorInterface
      */
-    public function createInputStringLengthValidator()
+    public function createInputStringLengthValidator(): InputStringLengthValidatorInterface
     {
         return new InputStringLengthValidator();
     }
 
     /**
-     * @return CountryRest
+     * @return HttpInterface
      */
-    public function createHttpRequest()
+    public function createHttp(): HttpInterface
     {
-        return new CountryRest($this->getApplicationConfig()->getCountryApiRestUrl());
+        return new Http($this->getApplicationConfig()->getCountryApiRestUrl());
     }
 }

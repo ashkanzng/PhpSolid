@@ -14,7 +14,7 @@ class ServiceRegistry implements ServiceRegistryInterface
      *
      * @return void
      */
-    public function register(ContainerInterface $container)
+    public function register(ContainerInterface $container): void
     {
         $container->register(CountryServiceInterface::class, CountryService::class);
     }

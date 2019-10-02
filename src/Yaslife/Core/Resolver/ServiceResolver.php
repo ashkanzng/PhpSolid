@@ -7,17 +7,21 @@ use Yaslife\Core\Kernel\Application;
 
 trait ServiceResolver
 {
-    public function hasService(string $interface)
+    /**
+     * @param string $interface
+     *
+     * @return bool
+     */
+    public function hasService(string $interface): bool
     {
         $container = $this->getContainer();
 
         return $container->has($interface);
     }
-
     /**
      * @param string $interface
      *
-     * @return Object
+     * @return object
      */
     public function getService(string $interface)
     {
@@ -29,7 +33,7 @@ trait ServiceResolver
     /**
      * @return ContainerInterface
      */
-    protected function getContainer()
+    protected function getContainer(): ContainerInterface
     {
         return Application::getContainer();
     }
